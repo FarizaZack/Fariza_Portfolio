@@ -1,10 +1,10 @@
 -- Data Exploration
 -- Dataset from Kaggle : https://www.kaggle.com/datasets/mirichoi0218/insurance
 
-SELECT
+SELECT 
 	*
 FROM
-	medical_insurance;
+	insurance_deduplicated;
 
 
 -- 1) Summary Statitics
@@ -19,16 +19,35 @@ SELECT
     MIN(charges) AS min_charges,
 	MIN(age) AS min_age 
 FROM 
-	medical_insurance;
+	insurance_deduplicated;
 
 -- 2) Count the frequency in categorical values such as sex, smoker, region
+-- # Frequency of Sex
 SELECT 
-	sex, 
-    COUNT(*) AS count 
+	sex,
+     COUNT(*) AS count 
 FROM 
-	medical_insurance 
+	insurance_deduplicated
 GROUP BY 
 	sex;
+
+-- # Frequency of Smoker
+SELECT 
+    smoker, 
+    COUNT(*) AS count
+FROM 
+	insurance_deduplicated
+GROUP BY 
+    smoker;
+
+-- # Frequency of Region
+SELECT 
+    region, 
+    COUNT(*) AS count
+FROM 
+	insurance_deduplicated
+GROUP BY 
+    region;
 
 -- 3) Correlations
 -- The higher ratio gives higher medical charges related to age
@@ -36,23 +55,25 @@ GROUP BY
 
 -- Any relation between Age and Charges ?
 SELECT 
-	age, 
-    charges, 
-    ROUND(charges / age,2) AS ratio 
+    age, 
+    ROUND(AVG(charges),2) AS avg_charges
 FROM 
-	medical_insurance 
-WHERE 
-	age > 0;
+	insurance_deduplicated
+GROUP BY 
+    age
+ORDER BY 
+    age;
     
 -- Any relation between BMI and Charges ?
 SELECT 
-	age, 
     bmi, 
-    ROUND(bmi / age, 2) AS ratio 
+    ROUND(AVG(charges),2) AS avg_charges
 FROM 
-	medical_insurance 
-WHERE 
-	age > 0;
+	insurance_deduplicated
+GROUP BY 
+    bmi
+ORDER BY 
+    bmi;
     
 -- 4) Group Analysis
 -- Grouping by region
@@ -60,25 +81,16 @@ SELECT
     region, 
     ROUND(AVG(charges), 2) AS avg_charges 
 FROM 
-    medical_insurance 
+    insurance_deduplicated
 GROUP BY 
     region;
-
--- Grouping by smoker
-SELECT 
-	smoker, 
-    ROUND(AVG(charges), 2) AS avg_charges 
-FROM 
-	medical_insurance 
-GROUP BY 
-	smoker;
 
 -- 5) Detect Patterns
 SELECT 
 	age, 
     ROUND(AVG(charges), 2) AS avg_charges 
 FROM 
-	medical_insurance 
+	insurance_deduplicated
 GROUP BY 
 	age 
 ORDER BY 
@@ -95,7 +107,7 @@ SELECT
     END AS age_group, 
     ROUND(AVG(charges), 2) AS avg_charges 
 FROM 
-	medical_insurance 
+	insurance_deduplicated
 GROUP BY 
 	age_group;
 
@@ -106,10 +118,10 @@ SELECT
     ROUND(AVG(bmi),2) AS avg_bmi, 
     ROUND(AVG(charges), 2) AS avg_charges 
 FROM 
-	medical_insurance 
+	insurance_deduplicated
 GROUP BY 
 	region;
-
+    
 -- 8) Relationship Exploration
 -- Relation between smoker status & charges
 
@@ -117,8 +129,10 @@ SELECT
 	smoker, 
 	ROUND(AVG(charges),2) AS avg_charges 
 FROM 
-	medical_insurance 
+	insurance_deduplicated
 GROUP BY 
 	smoker;
+
+
 
 
